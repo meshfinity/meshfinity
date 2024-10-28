@@ -4,7 +4,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-import imageio
+# import imageio
 import numpy as np
 import PIL.Image
 import rembg_offline as rembg

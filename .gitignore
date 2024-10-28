@@ -1,6 +1,7 @@
 autoremesher
 checkpoints
 ignored-files
+dist
 
 venv
 __pycache__
