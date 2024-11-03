@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# FIXME: Build for x86_64 for maximum compatibility
+
 mkdir -p autoremesher/mac
 wget -O autoremesher/mac/autoremesher-8fdfb7e-mac.zip "https://github.com/meshfinity/autoremesher/releases/download/8fdfb7e/autoremesher-8fdfb7e-mac.zip"
 unzip autoremesher/mac/autoremesher-8fdfb7e-mac.zip -d autoremesher/mac
