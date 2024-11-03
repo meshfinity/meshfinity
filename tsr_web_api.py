@@ -49,8 +49,8 @@ class TsrWebApi:
             else:
                 return None
 
-        mtl_path = re.sub("\.obj$", "", obj_path, flags=re.IGNORECASE) + ".mtl"
-        png_path = re.sub("\.obj$", "", obj_path, flags=re.IGNORECASE) + ".png"
+        mtl_path = re.sub(r"\.obj$", "", obj_path, flags=re.IGNORECASE) + ".mtl"
+        png_path = re.sub(r"\.obj$", "", obj_path, flags=re.IGNORECASE) + ".png"
 
         with open(obj_path, "w") as obj_file:
             obj_file.write(

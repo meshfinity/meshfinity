@@ -1,4 +1,5 @@
 import os
+import sys
 
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
 
@@ -20,7 +21,7 @@ if __name__ == "__main__":
         (
             "http://localhost:5173"
             if os.getenv("MESHFINITY_ENVIRONMENT") == "development"
-            else "assets/index.html"
+            else os.path.join(sys._MEIPASS, "gui_build", "index.html")
         ),
         js_api=api,
         min_size=(800, 600),

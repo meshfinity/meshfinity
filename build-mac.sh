@@ -14,13 +14,21 @@ wget -O checkpoints/dino-vitb16/preprocessor_config.json "https://huggingface.co
 wget -O checkpoints/dino-vitb16/config.json "https://huggingface.co/facebook/dino-vitb16/resolve/main/config.json?download=true"
 wget -O checkpoints/dino-vitb16/pytorch_model.bin "https://huggingface.co/facebook/dino-vitb16/resolve/main/pytorch_model.bin?download=true"
 
-brew install python@3.10
-pip3.10 install virtualenv
-python3.10 -m virtualenv venv
+cd gui
+npm i -D
+npm run build
+cd ..
+
+brew install python@3.12
+python3.12 -m venv venv
 source venv/bin/activate
 
 pip install torch torchvision
-pip install omegaconf pillow einops transformers trimesh rembg vtk moderngl pywebview requests cx_Freeze
+pip install omegaconf pillow einops transformers trimesh rembg vtk moderngl pywebview requests huggingface-hub
 pip uninstall -y rembg # We need rembg's dependencies, but we want to use our custom rembg_offline instead of the original rembg, so uninstall the original
+pip install pyinstaller
 
-cxfreeze main.py --target-dir=dist --target-name=Meshfinity --packages=torch
+pyinstaller main.py --noupx --hidden-import tsr --hidden-import tsr.system --hidden-import tsr.utils --hidden-import tsr.models --hidden-import tsr.models.isosurface --hidden-import tsr.models.nerf_renderer --hidden-import tsr.models.network_utils --hidden-import tsr.models.tokenizers --hidden-import tsr.models.tokenizers.image --hidden-import tsr.models.tokenizers.triplane --hidden-import tsr.models.transformer --hidden-import tsr.models.transformer.attention --hidden-import tsr.models.transformer.basic_transformer_block --hidden-import tsr.models.transformer.transformer_1d --add-data "gui/build:gui_build" --add-data "checkpoints:checkpoints" --add-data "autoremesher:autoremesher"
+rm dist/main/_internal/cv2/.dylibs/libcrypto.3.dylib
+cp /opt/homebrew/lib/libcrypto.3.dylib dist/main/_internal/cv2/.dylibs/libcrypto.3.dylib # rpaths may need to be fixed here?
+cp -r venv/lib/python3.12/site-packages/vtkmodules/util dist/main/_internal/vtkmodules

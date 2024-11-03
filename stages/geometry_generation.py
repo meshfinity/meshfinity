@@ -1,4 +1,5 @@
 import os
+import sys
 import io
 import base64
 import platform
@@ -354,8 +355,7 @@ class GeometryGenerationStage:
         texture_brute_force,
     ):
         with tempfile.TemporaryDirectory(
-            # FIXME: Upgrade to Python 3.12 and use these parameters!
-            # ignore_cleanup_errors=True, delete=True
+            ignore_cleanup_errors=True, delete=True
         ) as tmp_dir_path:
             vtk_out_path = os.path.join(tmp_dir_path, "vtk_out.obj")
             vtk_writer = vtk.vtkOBJWriter()
@@ -372,11 +372,14 @@ class GeometryGenerationStage:
             )
 
             AUTOREMESHER_TARGET_TRIANGLE_COUNT = 65536
+            autoremesher_base_path = (
+                os.path.join(os.path.dirname(__file__), "..", "autoremesher")
+                if os.getenv("MESHFINITY_ENVIRONMENT") == "development"
+                else os.path.join(sys._MEIPASS, "autoremesher")
+            )
             if platform.system() == "Darwin":
                 autoremesher_exe_path = os.path.join(
-                    os.path.dirname(__file__),
-                    "..",
-                    "autoremesher",
+                    autoremesher_base_path,
                     "mac",
                     "autoremesher.app",
                     "Contents",
@@ -385,9 +388,7 @@ class GeometryGenerationStage:
                 )
             elif platform.system() == "Windows":
                 autoremesher_exe_path = os.path.join(
-                    os.path.dirname(__file__),
-                    "..",
-                    "autoremesher",
+                    autoremesher_base_path,
                     "win",
                     "autoremesher.exe",
                 )
@@ -624,7 +625,11 @@ class GeometryGenerationStage:
 
         if not self.tsr_model:
             self.tsr_model = TSR.from_pretrained(
-                os.path.join(os.path.dirname(__file__), "..", "checkpoints", "tsr"),
+                (
+                    os.path.join(os.path.dirname(__file__), "..", "checkpoints", "tsr")
+                    if os.getenv("MESHFINITY_ENVIRONMENT") == "development"
+                    else os.path.join(sys._MEIPASS, "checkpoints", "tsr")
+                ),
                 config_name="config.yaml",
                 weight_name="model.ckpt",
             )
@@ -634,12 +639,18 @@ class GeometryGenerationStage:
         if inputs["removeBackground"] and not self.rembg_session:
             self.rembg_session = rembg.new_session(
                 model_name="u2net",
-                offline_model_path=os.path.join(
-                    os.path.dirname(__file__),
-                    "..",
-                    "checkpoints",
-                    "u2net",
-                    "u2net.onnx",
+                offline_model_path=(
+                    os.path.join(
+                        os.path.dirname(__file__),
+                        "..",
+                        "checkpoints",
+                        "u2net",
+                        "u2net.onnx",
+                    )
+                    if os.getenv("MESHFINITY_ENVIRONMENT") == "development"
+                    else os.path.join(
+                        sys._MEIPASS, "checkpoints", "u2net", "u2net.onnx"
+                    )
                 ),
             )
 
