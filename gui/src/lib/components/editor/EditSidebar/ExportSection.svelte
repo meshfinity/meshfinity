@@ -8,13 +8,10 @@
       coreInstance.geometryGenerationInputs.filename.split(".");
     defaultFilenameParts.pop();
     const defaultFilename = defaultFilenameParts.join(".").replace(/\s/g, "_");
-    const result = window.pywebview.api.export_data(
+    window.pywebview.api.export_data(
       coreInstance.mesh.exportableData,
       defaultFilename + ".obj"
     );
-    if (result !== null) {
-      coreInstance.resetAll();
-    }
   }
 </script>
 
