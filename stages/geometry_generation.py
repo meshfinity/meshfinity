@@ -8,7 +8,11 @@ import time
 import tempfile
 import trimesh
 import torch
-import vtk
+from vtkmodules.vtkFiltersCore import (
+    vtkWindowedSincPolyDataFilter,
+    vtkQuadricDecimation,
+)
+from vtkmodules.vtkIOGeometry import vtkOBJWriter
 import moderngl
 import numpy as np
 import rembg_offline as rembg
@@ -301,13 +305,13 @@ class GeometryGenerationStage:
         vtk_mesh = trimesh_vtk.trimesh_to_vtk(
             trimesh_mesh.vertices, trimesh_mesh.faces, None
         )
-        vtk_smoother = vtk.vtkWindowedSincPolyDataFilter()
+        vtk_smoother = vtkWindowedSincPolyDataFilter()
         vtk_smoother.SetInputData(vtk_mesh)
         vtk_smoother.SetNumberOfIterations(30)
         vtk_smoother.SetPassBand(0.00001)
         vtk_smoother.NormalizeCoordinatesOn()
         vtk_smoother.Update()
-        vtk_decimator = vtk.vtkQuadricDecimation()
+        vtk_decimator = vtkQuadricDecimation()
         vtk_decimator.SetInputConnection(vtk_smoother.GetOutputPort())
         vtk_decimator.SetTargetReduction(decimate_target_reduction)
         vtk_decimator.Update()
@@ -358,7 +362,7 @@ class GeometryGenerationStage:
             ignore_cleanup_errors=True, delete=True
         ) as tmp_dir_path:
             vtk_out_path = os.path.join(tmp_dir_path, "vtk_out.obj")
-            vtk_writer = vtk.vtkOBJWriter()
+            vtk_writer = vtkOBJWriter()
             vtk_writer.SetFileName(vtk_out_path)
             vtk_writer.SetInputData(vtk_mesh)
             vtk_writer.Write()

@@ -1,7 +1,12 @@
 # Modified from: https://github.com/AllenInstitute/TrimeshVtk/blob/main/trimesh_vtk/__init__.py
 
-import vtk
-from vtk.util.numpy_support import numpy_to_vtk, numpy_to_vtkIdTypeArray, vtk_to_numpy
+from vtkmodules.vtkCommonCore import vtkIdTypeArray, vtkPoints
+from vtkmodules.vtkCommonDataModel import vtkCellArray, vtkPolyData
+from vtkmodules.util.numpy_support import (
+    numpy_to_vtk,
+    numpy_to_vtkIdTypeArray,
+    vtk_to_numpy,
+)
 import numpy as np
 
 
@@ -20,12 +25,12 @@ def numpy_to_vtk_cells(mat):
 
     """
 
-    cells = vtk.vtkCellArray()
+    cells = vtkCellArray()
 
     # Seemingly, VTK may be compiled as 32 bit or 64 bit.
     # We need to make sure that we convert the trilist to the correct dtype
     # based on this. See numpy_to_vtkIdTypeArray() for details.
-    isize = vtk.vtkIdTypeArray().GetDataTypeSize()
+    isize = vtkIdTypeArray().GetDataTypeSize()
     req_dtype = np.int32 if isize == 4 else np.int64
     n_elems = mat.shape[0]
     n_dim = mat.shape[1]
@@ -60,8 +65,8 @@ def numpy_rep_to_vtk(vertices, shapes, edges=None):
 
     """
 
-    mesh = vtk.vtkPolyData()
-    points = vtk.vtkPoints()
+    mesh = vtkPolyData()
+    points = vtkPoints()
     points.SetData(numpy_to_vtk(vertices, deep=1))
     mesh.SetPoints(points)
 
