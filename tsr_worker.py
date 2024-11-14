@@ -1,7 +1,7 @@
 import queue
 import traceback
-
 import stages
+from download_checkpoints import download_checkpoints
 
 
 class TsrWorker:
@@ -26,10 +26,13 @@ class TsrWorker:
             self._current_stage_name = inputs["stage"]
 
             try:
-                if self._warm_stage_name != inputs["stage"]:
-                    self._warm_stage_name = inputs["stage"]
-                    self._warm_stage_instance = getattr(stages, inputs["stage"])()
-                self._warm_stage_instance.run(self, inputs)
+                if inputs["stage"] == "setup":
+                    download_checkpoints(self)
+                else:
+                    if self._warm_stage_name != inputs["stage"]:
+                        self._warm_stage_name = inputs["stage"]
+                        self._warm_stage_instance = getattr(stages, inputs["stage"])()
+                    self._warm_stage_instance.run(self, inputs)
             except Exception:
                 print(traceback.format_exc())
                 self._push_event(

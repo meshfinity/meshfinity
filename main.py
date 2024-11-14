@@ -9,8 +9,7 @@ from tsr_web_api import TsrWebApi
 
 
 def show_after_delay(window):
-    # Avoid the flash of white background if possible...
-    time.sleep(0.6)
+    time.sleep(1.0)  # Avoid the flash of white background if possible...
     window.show()
 
 

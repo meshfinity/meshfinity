@@ -4,7 +4,9 @@
 
   $effect(() => {
     window._pywebviewCoreInstance = coreInstance;
+    window.pywebview.api.check_for_updates();
+    coreInstance.setup();
   });
 </script>
 
-<AppLayout splashEnabled={true} />
+<AppLayout />

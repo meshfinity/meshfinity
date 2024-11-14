@@ -3,29 +3,28 @@
 </script>
 
 <div
-  class="w-full h-full overflow-hidden flex flex-col {coreInstance.mesh
-    .previewReady
-    ? 'items-start justify-end'
-    : 'items-center justify-center'} p-12 space-y-2"
+  class="w-full h-full overflow-hidden flex flex-col items-center justify-center p-12"
 >
-  <div
-    class="grow-0 shrink-0 drop-shadow-sm {coreInstance.mesh.previewReady
-      ? 'text-sm'
-      : 'text-base'}"
-  >
-    {coreInstance.progress.label}
+  <div class="grow-0 shrink-0 text-4xl font-thin mb-4 drop-shadow-xl">
+    Meshfinity is setting up...
   </div>
+  <p class="mb-4 drop-shadow-sm text-center text-sm text-white/80">
+    Meshfinity needs to download machine learning models which are too large
+    (2.2 GB)<br />to be included with the application bundle. This only happens
+    on first launch.
+  </p>
   <div
-    class="grow-0 shrink-0 {coreInstance.mesh.previewReady
-      ? 'w-[360px] h-[16px] rounded-md'
-      : 'w-[75%] h-[24px] rounded-lg'} bg-black/50 border border-fuchsia-950 overflow-hidden"
+    class="grow-0 shrink-0 w-[75%] h-[24px] rounded-lg bg-black/50 border border-fuchsia-950 overflow-hidden"
   >
     <div
       class="gel-progress-bar bg-fuchsia-900 relative absolute top-0 left-0 h-full overflow-hidden"
-      style="width: {(coreInstance.progress.value || 0.01) * 100.0}%;"
+      style="width: {(coreInstance.setupProgress.value || 0.01) * 100.0}%;"
     >
       <div class="gel-progress-bar-inner absolute top-0 w-[144px] h-full"></div>
     </div>
+  </div>
+  <div class="grow-0 shrink-0 drop-shadow-sm text-sm mt-4 text-white/80">
+    {coreInstance.setupProgress.label}
   </div>
 </div>
 

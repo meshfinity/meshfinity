@@ -2,6 +2,7 @@ import Mesh from "./Mesh.svelte.js";
 import GeometryGenerationInputs from "./stageInputs/GeometryGenerationInputs.svelte";
 
 export default class Core {
+  setupProgress = $state(null);
   progress = $state(null);
   error = $state(null);
   mesh = new Mesh();
@@ -12,10 +13,15 @@ export default class Core {
   }
 
   resetAll() {
+    this.setupProgress = null;
     this.progress = null;
     this.error = null;
     this.mesh.reset();
     this.geometryGenerationInputs.reset();
+  }
+
+  setup() {
+    window.pywebview.api.setup();
   }
 
   runGeometryGenerationStage() {
@@ -31,6 +37,9 @@ export default class Core {
     switch (event.type) {
       case "error":
         this._handleErrorEvent(event.event);
+        break;
+      case "setup_progress":
+        this._handleSetupProgressEvent(event.event);
         break;
       case "progress":
         this._handleProgressEvent(event.event);
@@ -57,6 +66,10 @@ export default class Core {
     );
     this.error = event;
     this.progress = null;
+  }
+
+  _handleSetupProgressEvent(event) {
+    this.setupProgress = event;
   }
 
   _handleProgressEvent(event) {

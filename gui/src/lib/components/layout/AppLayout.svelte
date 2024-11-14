@@ -1,6 +1,7 @@
 <script>
   import { fade } from "svelte/transition";
   import {
+    FADE_IN_DURATION,
     FADE_OUT_DURATION,
     customFadeIn,
     customFadeOut,
@@ -11,36 +12,35 @@
   import Viewport from "$lib/components/editor/Viewport.svelte";
   import DragNDrop from "$lib/components/layout/DragNDrop.svelte";
   import Progress from "$lib/components/layout/Progress.svelte";
+  import SetupProgress from "$lib/components/layout/SetupProgress.svelte";
   import RembgPreview from "$lib/components/layout/RembgPreview.svelte";
   import EditSidebar from "$lib/components/editor/EditSidebar/EditSidebar.svelte";
   import SupportSidebar from "$lib/components/editor/SupportSidebar/SupportSidebar.svelte";
   import coreInstance from "$lib/core/coreInstance.svelte.js";
 
-  let { splashEnabled } = $props();
-
   let backgroundVisible = $state(false);
-  let splashVisible = $state(false);
-  let mainVisible = $state(false);
+  let foregroundVisible = $state(false);
+
+  let splashFinished = $state(false);
+  let splashVisible = $derived(
+    foregroundVisible &&
+      (!splashFinished || coreInstance.setupProgress?.state === "verifying")
+  );
+  let setupProgressVisible = $derived(
+    foregroundVisible && !splashVisible && coreInstance.setupProgress
+  );
+  let mainVisible = $derived(
+    foregroundVisible && !splashVisible && !setupProgressVisible
+  );
 
   $effect(() => {
-    if (splashEnabled) {
-      window.setTimeout(() => {
-        backgroundVisible = true;
-        window.setTimeout(() => {
-          splashVisible = true;
-        }, 300);
-      }, 300);
-    } else {
+    window.setTimeout(() => {
       backgroundVisible = true;
-      splashVisible = false;
-      mainVisible = true;
-    }
+      window.setTimeout(() => {
+        foregroundVisible = true;
+      }, 300);
+    }, 300);
   });
-
-  function handleSplashAnimationFinished() {
-    splashVisible = false;
-    mainVisible = true;
-  }
 </script>
 
 <div
@@ -49,7 +49,7 @@
   {#if backgroundVisible}
     <div
       class="select-none absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none"
-      in:fade={{ duration: splashEnabled ? 300 : 0 }}
+      in:fade={{ duration: FADE_IN_DURATION }}
     >
       <Canvas Renderer={BackgroundRenderer} />
     </div>
@@ -60,15 +60,25 @@
       class="pointer-events-none select-none absolute top-0 left-0 w-full h-full overflow-hidden"
       out:fade={{ duration: FADE_OUT_DURATION }}
     >
-      <Splash onAnimationFinished={handleSplashAnimationFinished} />
+      <Splash onAnimationFinished={() => (splashFinished = true)} />
+    </div>
+  {/if}
+
+  {#if setupProgressVisible}
+    <div
+      class="pointer-events-none select-none absolute top-0 left-0 w-full h-full overflow-hidden"
+      in:fade={customFadeIn}
+      out:fade={customFadeOut}
+    >
+      <SetupProgress />
     </div>
   {/if}
 
   {#if mainVisible}
     <div
       class="absolute top-0 left-0 w-full h-full overflow-hidden"
-      in:fade={splashEnabled ? customFadeIn : { duration: 0 }}
-      out:fade={splashEnabled ? customFadeOut : { duration: 0 }}
+      in:fade={customFadeIn}
+      out:fade={customFadeOut}
     >
       <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
         <Viewport />

@@ -25,6 +25,14 @@ class TsrWebApi:
     def bind_window(self, window):
         self._window = window
 
+    def setup(self):
+        self.worker.push_inputs(
+            None,
+            {
+                "stage": "setup",
+            },
+        )
+
     def push_inputs(self, inputs):
         id = str(uuid.uuid4())
         self.worker.push_inputs(id, inputs)
