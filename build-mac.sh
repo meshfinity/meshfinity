@@ -23,5 +23,6 @@ arch --x86_64 pip install pyinstaller
 arch --x86_64 pyinstaller main.py --noupx --hidden-import tsr --hidden-import tsr.system --hidden-import tsr.utils --hidden-import tsr.models --hidden-import tsr.models.isosurface --hidden-import tsr.models.nerf_renderer --hidden-import tsr.models.network_utils --hidden-import tsr.models.tokenizers --hidden-import tsr.models.tokenizers.image --hidden-import tsr.models.tokenizers.triplane --hidden-import tsr.models.transformer --hidden-import tsr.models.transformer.attention --hidden-import tsr.models.transformer.basic_transformer_block --hidden-import tsr.models.transformer.transformer_1d --add-data "gui/build:gui_build" --add-data "checkpoints:checkpoints" --add-data "autoremesher:autoremesher"
 cp -r venv/lib/python3.12/site-packages/vtkmodules/util dist/main/_internal/vtkmodules
 
-tar cvf meshfinity-release.tar dist/main
-xz -zv9e meshfinity-release.tar
+mv dist/main dist/meshfinity-release
+# After this runs, in the GitHub Actions script, We will rename `dist/meshfinity-release` to contain the version number
+# Then we will use `ditto` to compress this to a ZIP archive.
