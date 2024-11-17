@@ -20,7 +20,7 @@ arch --x86_64 pip install numpy==1.26.4
 arch --x86_64 pip install pyinstaller
 
 arch --x86_64 pyinstaller main.py --noupx --windowed --icon branding/icon.png -n Meshfinity --hidden-import tsr --hidden-import tsr.system --hidden-import tsr.utils --hidden-import tsr.models --hidden-import tsr.models.isosurface --hidden-import tsr.models.nerf_renderer --hidden-import tsr.models.network_utils --hidden-import tsr.models.tokenizers --hidden-import tsr.models.tokenizers.image --hidden-import tsr.models.tokenizers.triplane --hidden-import tsr.models.transformer --hidden-import tsr.models.transformer.attention --hidden-import tsr.models.transformer.basic_transformer_block --hidden-import tsr.models.transformer.transformer_1d --add-data "gui/build:gui_build" --add-data "autoremesher:autoremesher"
-cp -r venv/lib/python3.12/site-packages/vtkmodules/util dist/main/_internal/vtkmodules
+cp -r venv/lib/python3.12/site-packages/vtkmodules/util dist/Meshfinity/_internal/vtkmodules
 
 # After this runs, in the GitHub Actions script, we will create a folder with the version number in the name.
 # Then we will copy `dist/Meshfinity.app` into this folder, and use `ditto` to compress it to a ZIP archive, which will be released.

@@ -1,5 +1,7 @@
 import os
 import sys
+import pathlib
+import platform
 import pooch
 
 
@@ -47,11 +49,20 @@ class CustomProgressBar:
 
 
 def get_checkpoints_dir():
-    return (
-        os.path.join(os.path.dirname(__file__), "checkpoints")
-        if os.getenv("MESHFINITY_ENVIRONMENT") == "development"
-        else os.path.join(sys._MEIPASS, "checkpoints")
-    )
+    if os.getenv("MESHFINITY_ENVIRONMENT") == "development":
+        return os.path.join(os.path.dirname(__file__), "checkpoints")
+    elif platform.system() == "Darwin":
+        return os.path.join(
+            pathlib.Path.home(),
+            "Library",
+            "Application Support",
+            "Meshfinity",
+            "checkpoints",
+        )
+    elif platform.system() == "Windows":
+        return os.path.join(sys._MEIPASS, "checkpoints")
+    else:
+        raise Exception("Platform not supported")
 
 
 def retrieve_checkpoint(
