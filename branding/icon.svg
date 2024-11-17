@@ -24,13 +24,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#505050"
      showgrid="false"
-     inkscape:zoom="0.19814815"
-     inkscape:cx="658.59812"
-     inkscape:cy="494.57943"
-     inkscape:window-width="1920"
-     inkscape:window-height="1027"
+     inkscape:zoom="0.44946592"
+     inkscape:cx="530.62977"
+     inkscape:cy="433.84824"
+     inkscape:window-width="1728"
+     inkscape:window-height="1051"
      inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:window-y="38"
      inkscape:window-maximized="1"
      inkscape:current-layer="Layer_1" />
   <defs
@@ -7729,25 +7729,6 @@
        y1="4077.9"
        x2="-1968.64"
        y2="4268.94" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient1"
-       id="linearGradient8"
-       gradientUnits="userSpaceOnUse"
-       x1="544.20789"
-       y1="541.21179"
-       x2="541.14502"
-       y2="2.3567803" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient46"
-       id="linearGradient9"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-1080.0001,-1079.9999)"
-       x1="544.20789"
-       y1="541.21179"
-       x2="541.14502"
-       y2="2.3567803" />
     <filter
        inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
@@ -11841,24 +11822,6 @@
     </g>
     <g
        id="g46-8"
-       inkscape:label="Linear Gradients">
-      <rect
-         style="fill:url(#linearGradient8);fill-opacity:1;stroke-width:0.937999"
-         id="rect1-8"
-         width="1080"
-         height="540"
-         x="0"
-         y="0"
-         inkscape:label="Upper" />
-      <rect
-         style="display:inline;fill:url(#linearGradient9);fill-opacity:1;stroke-width:0.937999"
-         id="rect1-2-2"
-         width="1080"
-         height="540"
-         x="-1080"
-         y="-1080"
-         transform="scale(-1)"
-         inkscape:label="Lower" />
-    </g>
+       inkscape:label="Linear Gradients" />
   </g>
 </svg>
