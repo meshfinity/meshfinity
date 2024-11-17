@@ -1,0 +1,30 @@
+name: Build Meshfinity for macOS
+
+on:
+  workflow_dispatch: null
+
+permissions:
+  contents: write
+
+jobs:
+  build-mac:
+    name: Build Meshfinity for macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+      - uses: notiz-dev/github-action-json-property@release
+        id: version
+        with:
+          path: "version.json"
+          prop_path: "version"
+      - run: NONINTERACTIVE=1 arch --x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      - run: arch --x86_64 /usr/local/Homebrew/bin/brew install python@3.12 || true # This returns exit code 1 even if successful - why ??
+      - run: ./build-mac.sh
+        timeout-minutes: 60
+      - run: ditto -c -k --sequesterRsrc --keepParent dist/Meshfinity.app meshfinity-${{ steps.version.outputs.prop }}-mac.zip
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.prop }}
+          files: meshfinity-${{ steps.version.outputs.prop }}-mac.zip

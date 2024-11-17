@@ -9,7 +9,6 @@ npm i -D
 npm run build
 cd ..
 
-arch --x86_64 /usr/local/bin/brew install python@3.12
 arch --x86_64 /usr/local/bin/python3.12 -m venv venv
 source venv/bin/activate
 
