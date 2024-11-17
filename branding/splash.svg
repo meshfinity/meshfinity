@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1024"
+   height="512"
+   viewBox="0 0 270.93333 135.46667"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
+   sodipodi:docname="splash.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     inkscape:zoom="0.78216891"
+     inkscape:cx="458.3409"
+     inkscape:cy="187.93894"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <rect
+     style="fill:#000000;fill-opacity:1;stroke-width:0.282366"
+     id="rect1-3"
+     width="270.93335"
+     height="135.46667"
+     x="0"
+     y="2.220446e-16" />
+  <rect
+     style="opacity:0.2;fill:#4a044e;fill-opacity:1;stroke-width:0.282366"
+     id="rect1"
+     width="270.93335"
+     height="135.46667"
+     x="7.1054274e-15"
+     y="7.1054274e-15" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       class="cls-2"
+       id="text3"
+       style="font-weight:700;font-size:42.8546px;font-family:SpaceGrotesk-Bold, 'Space Grotesk';font-variation-settings:'wght' 700;fill:#f0abfc;fill-opacity:1;stroke-width:0.264583"
+       x="25.651695"
+       y="78.746964"><tspan
+         class="cls-3"
+         x="25.651695"
+         y="78.746964"
+         id="tspan1"
+         style="fill:#f0abfc;fill-opacity:1;stroke-width:0.264583">mes</tspan><tspan
+         class="cls-1"
+         x="107.50319"
+         y="78.746964"
+         id="tspan2"
+         style="fill:#f0abfc;fill-opacity:1;stroke-width:0.264583">h</tspan><tspan
+         class="cls-4"
+         x="132.65979"
+         y="78.746964"
+         id="tspan3"
+         style="fill:#f0abfc;fill-opacity:1;stroke-width:0.264583">finity</tspan></text>
+  </g>
+  <rect
+     style="opacity:1;fill:#86198f;fill-opacity:1;stroke-width:0.126734"
+     id="rect2"
+     width="270.93335"
+     height="3.175"
+     x="0"
+     y="132.29167" />
+</svg>
