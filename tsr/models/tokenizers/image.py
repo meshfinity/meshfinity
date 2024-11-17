@@ -7,6 +7,7 @@ import torch.nn as nn
 from einops import rearrange
 from huggingface_hub import hf_hub_download
 from transformers.models.vit.modeling_vit import ViTModel
+from download_checkpoints import get_checkpoints_dir
 
 from ...utils import BaseModule
 
@@ -14,17 +15,9 @@ from ...utils import BaseModule
 class DINOSingleImageTokenizer(BaseModule):
     @dataclass
     class Config(BaseModule.Config):
-        pretrained_model_name_or_path: str = (
-            os.path.join(
-                os.path.dirname(__file__),
-                "..",
-                "..",
-                "..",
-                "checkpoints",
-                "dino-vitb16",
-            )
-            if os.getenv("MESHFINITY_ENVIRONMENT") == "development"
-            else os.path.join(sys._MEIPASS, "checkpoints", "dino-vitb16")
+        pretrained_model_name_or_path: str = os.path.join(
+            get_checkpoints_dir(),
+            "dino-vitb16",
         )
         enable_gradient_checkpointing: bool = False
 

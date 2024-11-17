@@ -11,6 +11,7 @@ import requests
 import webview
 from PIL import Image
 from tsr_worker import TsrWorker
+from version import MESHFINITY_CURRENT_VERSION
 
 
 class TsrWebApi:
@@ -86,7 +87,7 @@ class TsrWebApi:
             )
             json_data = response.json()
             version = json_data["version"]
-            if version != "1.0.0":
+            if version != MESHFINITY_CURRENT_VERSION:
                 confirm_result = self._window.create_confirmation_dialog(
                     "Update Meshfinity",
                     "An update is available! Would you like to visit meshfinity.com to download it now?",

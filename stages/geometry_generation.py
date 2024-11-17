@@ -20,6 +20,7 @@ import trimesh_vtk
 from PIL import Image
 from tsr.system import TSR
 from tsr.utils import remove_background, resize_foreground, scale_tensor
+from download_checkpoints import get_checkpoints_dir
 
 
 class GeometryGenerationStage:
@@ -629,11 +630,7 @@ class GeometryGenerationStage:
 
         if not self.tsr_model:
             self.tsr_model = TSR.from_pretrained(
-                (
-                    os.path.join(os.path.dirname(__file__), "..", "checkpoints", "tsr")
-                    if os.getenv("MESHFINITY_ENVIRONMENT") == "development"
-                    else os.path.join(sys._MEIPASS, "checkpoints", "tsr")
-                ),
+                os.path.join(get_checkpoints_dir(), "tsr"),
                 config_name="config.yaml",
                 weight_name="model.ckpt",
             )
@@ -645,15 +642,9 @@ class GeometryGenerationStage:
                 model_name="u2net",
                 offline_model_path=(
                     os.path.join(
-                        os.path.dirname(__file__),
-                        "..",
-                        "checkpoints",
+                        get_checkpoints_dir(),
                         "u2net",
                         "u2net.onnx",
-                    )
-                    if os.getenv("MESHFINITY_ENVIRONMENT") == "development"
-                    else os.path.join(
-                        sys._MEIPASS, "checkpoints", "u2net", "u2net.onnx"
                     )
                 ),
             )
