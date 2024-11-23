@@ -14,7 +14,7 @@ python -m venv venv
 venv\Scripts\activate.ps1
 
 pip install torch torchvision
-pip install omegaconf pillow einops transformers trimesh "rembg[cpu]" vtk moderngl pywebview requests huggingface-hub
+pip install omegaconf pillow einops transformers trimesh "rembg[cpu]" vtk moderngl pywebview requests huggingface-hub filelock
 pip uninstall -y rembg
 pip uninstall -y numpy
 pip install numpy==1.26.4

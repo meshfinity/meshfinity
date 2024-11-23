@@ -23,7 +23,7 @@ jobs:
           path: "version.json"
           prop_path: "version"
       - run: NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      - run: /opt/homebrew/bin/brew install python@3.12 || true # This returns exit code 1 even if successful - why ??
+      - run: /opt/homebrew/bin/brew install tcl-tk python@3.12 || true # This returns exit code 1 even if successful - why ??
       - run: ./build-mac-arm.sh
         timeout-minutes: 60
       - run: ditto -c -k --sequesterRsrc --keepParent dist/Meshfinity.app meshfinity-${{ steps.version.outputs.prop }}-mac-arm.zip

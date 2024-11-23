@@ -18,7 +18,7 @@ cd ..
 source venv/bin/activate
 
 pip install torch torchvision
-pip install omegaconf pillow einops transformers trimesh rembg vtk moderngl pywebview requests huggingface-hub
+pip install omegaconf pillow einops transformers trimesh rembg vtk moderngl pywebview requests huggingface-hub filelock
 pip uninstall -y rembg # We need rembg's dependencies, but we want to use our custom rembg_offline instead of the original rembg, so uninstall the original
 pip uninstall -y numpy
 pip install numpy==1.26.4
