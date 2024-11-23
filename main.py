@@ -49,8 +49,10 @@ def acquire_lock_file():
         lock_file = None
         lock_file_path = None
 
-        # Close splash, show dialog, and exit
+        # Need to close splash before showing dialog, since splash is always on top, nobody could see the dialog
         close_splash()
+
+        # Show error dialog
         tk_root = tkinter.Tk()
         tk_root.withdraw()
         tkinter.messagebox.showerror(
@@ -58,6 +60,8 @@ def acquire_lock_file():
             "Another instance of Meshfinity is currently busy. Please wait a moment before attempting to launch Meshfinity again, or reboot your device if this problem persists.",
         )
         tk_root.destroy()
+
+        # Exit immediately
         sys.exit(0)
 
 
@@ -71,6 +75,7 @@ def release_lock_file():
         except Exception:
             # Catch this exception so we can at least continue to try to delete the file (probably won't work if still locked)
             print(traceback.format_exc())
+
         try:
             os.remove(lock_file_path)
         except Exception:
@@ -79,14 +84,23 @@ def release_lock_file():
     lock_file = None
     lock_file_path = None
 
+    sys.exit(0)
+
+
+def release_lock_file_signal(signum, frame):
+    # Prevent exception: release_lock_file takes 0 positional arguments but called with 2
+    release_lock_file()
+
 
 # Register release_lock_file for signals and exit to ensure that the lockfile is deleted when the process exits
 # (otherwise it would be impossible to create another instance, even though there is no running process).
 # This doesn't work for SIGKILL... there isn't really a good way to clean up if it crashes that badly...
 # hopefully the temporary directory will be cleared on reboot.
-signal.signal(signal.SIGTERM, release_lock_file)
-signal.signal(signal.SIGINT, release_lock_file)
-signal.signal(signal.SIGABRT, release_lock_file)
+signal.signal(signal.SIGTERM, release_lock_file_signal)
+signal.signal(signal.SIGINT, release_lock_file_signal)
+signal.signal(signal.SIGABRT, release_lock_file_signal)
+# atexit sends 0 arguments, so register the original release_lock_file() function,
+# not release_lock_file_signal
 atexit.register(release_lock_file)
 
 # Now try to ensure this is the only running instance
@@ -105,7 +119,8 @@ from tsr_web_api import TsrWebApi
 
 
 def on_webview_start(window):
-    time.sleep(1.0)  # Avoid the flash of white background if possible...
+    # Give webview some time to load the page, so we can avoid the flash of white background if possible...
+    time.sleep(1.0)
     close_splash()
     window.show()
 
