@@ -45,6 +45,7 @@ def acquire_lock_file():
         lock_file.acquire()
     except filelock.Timeout:
         # Set these to None to prevent release_lock_file from deleting another instance's lockfile
+        # (This is actually possible for another process to release the lockfile - very strange)
         lock_file = None
         lock_file_path = None
 
@@ -105,14 +106,9 @@ from tsr_web_api import TsrWebApi
 
 def on_webview_start(window):
     time.sleep(1.0)  # Avoid the flash of white background if possible...
+    close_splash()
     window.show()
 
-
-#
-# All imports complete - application is ready!
-#
-
-close_splash()
 
 api = TsrWebApi()
 
