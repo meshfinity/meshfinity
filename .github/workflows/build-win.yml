@@ -1,0 +1,34 @@
+name: Build Meshfinity for Windows
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-win:
+    name: Build Meshfinity for Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: notiz-dev/github-action-json-property@release
+        id: version
+        with:
+          path: "version.json"
+          prop_path: "version"
+      - run: .\build-win.bat
+        timeout-minutes: 60
+      - run: Compress-Archive dist\\Meshfinity meshfinity-${{ github.event.inputs.tagName }}-win.zip
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tagName }}
+          files: meshfinity-${{ github.event.inputs.tagName }}-win.zip

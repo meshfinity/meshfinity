@@ -1,11 +1,13 @@
 #!/bin/bash
 
-# TODO: ARM build of autoremesher ??
+# Would be best to have an ARM build of AutoRemesher, instead of this one, which is x64
+# Unfortunately IIRC the version of Intel TBB required by AutoRemesher is outdated and
+# doesn't support ARM
 mkdir -p autoremesher/mac
-wget -O autoremesher/mac/autoremesher-8fdfb7e-mac.zip "https://github.com/meshfinity/autoremesher/releases/download/8fdfb7e/autoremesher-8fdfb7e-mac.zip"
-unzip autoremesher/mac/autoremesher-8fdfb7e-mac.zip -d autoremesher/mac
-rm -rf autoremesher/mac/autoremesher-8fdfb7e-mac
-rm autoremesher/mac/autoremesher-8fdfb7e-mac.zip
+wget -O autoremesher/mac/autoremesher-7e26f98-mac.zip "https://github.com/meshfinity/autoremesher/releases/download/7e26f98/autoremesher-7e26f98-mac.zip"
+unzip autoremesher/mac/autoremesher-7e26f98-mac.zip -d autoremesher/mac
+rm -rf autoremesher/mac/autoremesher-7e26f98-mac
+rm autoremesher/mac/autoremesher-7e26f98-mac.zip
 
 cd gui
 npm i -D

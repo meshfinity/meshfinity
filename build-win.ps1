@@ -1,9 +1,9 @@
 mkdir autoremesher/win
-Invoke-WebRequest "https://github.com/meshfinity/autoremesher/releases/download/8fdfb7e/autoremesher-8fdfb7e-win.zip" -OutFile autoremesher/win/autoremesher-8fdfb7e-win.zip
-Expand-Archive autoremesher/win/autoremesher-8fdfb7e-win.zip -DestinationPath autoremesher/win
-del autoremesher/win/autoremesher-8fdfb7e-win.zip
-robocopy /E /MOV autoremesher/win/autoremesher-8fdfb7e-win autoremesher/win
-rmdir autoremesher/win/autoremesher-8fdfb7e-win
+Invoke-WebRequest "https://github.com/meshfinity/autoremesher/releases/download/7e26f98/autoremesher-7e26f98-win.zip" -OutFile autoremesher/win/autoremesher-7e26f98-win.zip
+Expand-Archive autoremesher/win/autoremesher-7e26f98-win.zip -DestinationPath autoremesher/win
+del autoremesher/win/autoremesher-7e26f98-win.zip
+robocopy /E /MOV autoremesher/win/autoremesher-7e26f98-win autoremesher/win
+rmdir autoremesher/win/autoremesher-7e26f98-win
 
 cd gui
 npm i -D
@@ -14,7 +14,7 @@ python -m venv venv
 venv\Scripts\activate.ps1
 
 pip install torch torchvision
-pip install omegaconf pillow einops transformers trimesh rembg vtk moderngl pywebview requests huggingface-hub
+pip install omegaconf pillow einops transformers trimesh "rembg[cpu]" vtk moderngl pywebview requests huggingface-hub
 pip uninstall -y rembg
 pip uninstall -y numpy
 pip install numpy==1.26.4
