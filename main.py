@@ -44,6 +44,11 @@ def acquire_lock_file():
     try:
         lock_file.acquire()
     except filelock.Timeout:
+        # Set these to None to prevent release_lock_file from deleting another instance's lockfile
+        lock_file = None
+        lock_file_path = None
+
+        # Close splash, show dialog, and exit
         close_splash()
         tk_root = tkinter.Tk()
         tk_root.withdraw()
