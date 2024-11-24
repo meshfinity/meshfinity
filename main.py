@@ -8,15 +8,8 @@ import signal
 import sys
 import tempfile
 import traceback
-
-try:
-    # Used for "another instance is busy" error message in acquire_lock_file
-    import tkinter
-    import tkinter.messagebox
-except Exception:
-    print("Tkinter not found - acquire_lock_file will not display a dialog box...")
-    print(traceback.format_exc())
-    pass
+from message_box import message_box_error
+from download_checkpoints import delete_tmp_downloads
 
 lock_file_path = None
 lock_file = None
@@ -53,13 +46,10 @@ def acquire_lock_file():
         close_splash()
 
         # Show error dialog
-        tk_root = tkinter.Tk()
-        tk_root.withdraw()
-        tkinter.messagebox.showerror(
+        message_box_error(
             "Meshfinity is busy",
             "Another instance of Meshfinity is currently busy. Please wait a moment before attempting to launch Meshfinity again, or reboot your device if this problem persists.",
         )
-        tk_root.destroy()
 
         # Exit immediately
         sys.exit(0)
@@ -119,8 +109,9 @@ from tsr_web_api import TsrWebApi
 
 
 def on_webview_start(window):
-    # Give webview some time to load the page, so we can avoid the flash of white background if possible...
-    time.sleep(1.0)
+    time.sleep(
+        1.0  # Give webview some time to load the page, so we can avoid the flash of white background if possible...
+    )
     close_splash()
     window.show()
 
@@ -129,9 +120,11 @@ api = TsrWebApi()
 
 
 def kill_api_processes():
+    global api
     api.kill_running_processes()
 
 
+atexit.register(delete_tmp_downloads)
 atexit.register(kill_api_processes)
 
 window = webview.create_window(

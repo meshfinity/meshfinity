@@ -1,8 +1,11 @@
 import os
+import shutil
 import sys
+import glob
 import pathlib
 import platform
 import pooch
+import traceback
 
 
 class CustomProgressBar:
@@ -30,7 +33,7 @@ class CustomProgressBar:
             return
         self.count = min(self.count, self.total)
         self._worker._push_event(
-            "setup_progress",
+            "setupProgress",
             {
                 "label": self._progress_label,
                 "value": (
@@ -65,6 +68,29 @@ def get_checkpoints_dir():
         raise Exception("Platform not supported")
 
 
+def delete_tmp_downloads():
+    combined = [
+        *glob.glob(os.path.join(get_checkpoints_dir(), "*tmp*")),
+        *glob.glob(os.path.join(get_checkpoints_dir(), "*TMP*")),
+        *glob.glob(os.path.join(get_checkpoints_dir(), "*temp*")),
+        *glob.glob(os.path.join(get_checkpoints_dir(), "*TEMP*")),
+        *glob.glob(os.path.join(get_checkpoints_dir(), "**", "*tmp*")),
+        *glob.glob(os.path.join(get_checkpoints_dir(), "**", "*TMP*")),
+        *glob.glob(os.path.join(get_checkpoints_dir(), "**", "*temp*")),
+        *glob.glob(os.path.join(get_checkpoints_dir(), "**", "*TEMP*")),
+    ]
+
+    for item in combined:
+        if os.path.exists(item):  # May not exist if we deleted a parent directory
+            try:
+                if os.path.isdir(item) and not os.path.islink(item):
+                    shutil.rmtree(item)
+                else:
+                    os.remove(item)
+            except Exception:
+                print(traceback.format_exc())
+
+
 def retrieve_checkpoint(
     url,
     known_hash,
@@ -88,18 +114,19 @@ def retrieve_checkpoint(
 
 
 def download_checkpoints(worker):
-    print("BEGIN downloading checkpoints")
-
-    # We will verify the SHA hashes before doing anything...
+    # We will delete temporary files and pooch verifies SHA hashes before downloading anything...
     # In this `verifying` state, nothing will be displayed
+    # If pooch needs to download anything, then CustomProgressBar will update progress accordingly
     worker._push_event(
-        "setup_progress",
+        "setupProgress",
         {
             "state": "verifying",
             "label": "",
             "value": 0,
         },
     )
+
+    delete_tmp_downloads()
 
     retrieve_checkpoint(
         "https://huggingface.co/stabilityai/TripoSR/resolve/main/model.ckpt",
@@ -163,8 +190,6 @@ def download_checkpoints(worker):
     )
 
     worker._push_event(
-        "setup_progress",
+        "setupProgress",
         None,
     )
-
-    print("DONE downloading checkpoints")

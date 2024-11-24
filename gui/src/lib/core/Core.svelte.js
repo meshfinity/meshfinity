@@ -2,7 +2,10 @@ import Mesh from "./Mesh.svelte.js";
 import GeometryGenerationInputs from "./stageInputs/GeometryGenerationInputs.svelte";
 
 export default class Core {
+  isBeforeSetup = $state(true);
   setupProgress = $state(null);
+  setupError = $state(null);
+
   progress = $state(null);
   error = $state(null);
   mesh = new Mesh();
@@ -13,7 +16,6 @@ export default class Core {
   }
 
   resetAll() {
-    this.setupProgress = null;
     this.progress = null;
     this.error = null;
     this.mesh.reset();
@@ -38,7 +40,7 @@ export default class Core {
       case "error":
         this._handleErrorEvent(event.event);
         break;
-      case "setup_progress":
+      case "setupProgress":
         this._handleSetupProgressEvent(event.event);
         break;
       case "progress":
@@ -64,12 +66,20 @@ export default class Core {
     window.alert(
       `Oops! Looks like Meshfinity encountered an error. Please click the Chat button and report this error.\n\nError: ${event.traceback}`
     );
-    this.error = event;
-    this.progress = null;
+
+    if (this.isBeforeSetup || this.setupProgress) {
+      // If error occurs before or during setup, we can't continue running the app
+      this.setupError = event;
+      this.setupProgress = null;
+    } else {
+      this.error = event;
+      this.progress = null;
+    }
   }
 
   _handleSetupProgressEvent(event) {
     this.setupProgress = event;
+    this.isBeforeSetup = false;
   }
 
   _handleProgressEvent(event) {

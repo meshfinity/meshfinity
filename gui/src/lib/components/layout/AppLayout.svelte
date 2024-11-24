@@ -22,15 +22,27 @@
   let foregroundVisible = $state(false);
 
   let splashFinished = $state(false);
+  let setupErrorVisible = $derived(
+    foregroundVisible && !!coreInstance.setupError
+  );
   let splashVisible = $derived(
     foregroundVisible &&
-      (!splashFinished || coreInstance.setupProgress?.state === "verifying")
+      !setupErrorVisible &&
+      (!splashFinished ||
+        coreInstance.isBeforeSetup ||
+        coreInstance.setupProgress?.state === "verifying")
   );
   let setupProgressVisible = $derived(
-    foregroundVisible && !splashVisible && coreInstance.setupProgress
+    foregroundVisible &&
+      !setupErrorVisible &&
+      !splashVisible &&
+      coreInstance.setupProgress
   );
   let mainVisible = $derived(
-    foregroundVisible && !splashVisible && !setupProgressVisible
+    foregroundVisible &&
+      !setupErrorVisible &&
+      !splashVisible &&
+      !setupProgressVisible
   );
 
   $effect(() => {
@@ -71,6 +83,30 @@
       out:fade={customFadeOut}
     >
       <SetupProgress />
+    </div>
+  {/if}
+
+  {#if setupErrorVisible}
+    <div
+      class="absolute top-0 left-0 w-full h-full overflow-hidden flex flex-col items-center justify-center"
+      in:fade={customFadeIn}
+      out:fade={customFadeOut}
+    >
+      <p class="pointer-events-none select-none text-center">
+        We&apos;re sorry, Meshfinity has encountered an error while setting up.<br
+        />
+        If this is your first time using Meshfinity, please ensure your device is
+        connected to the internet.<br />
+        Close this window and re-launch Meshfinity to try again.
+      </p>
+      <p class="mt-4 pointer-events-none select-none text-center text-white/50">
+        If this error persists, click the &quot;Chat&quot; button in the
+        bottom-right to get help.
+      </p>
+
+      <div class="absolute bottom-[24px] right-[24px] w-[160px]">
+        <SupportSidebar chatOnly={true} />
+      </div>
     </div>
   {/if}
 

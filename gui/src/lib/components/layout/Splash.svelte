@@ -1,5 +1,5 @@
 <script>
-  const { onAnimationFinished } = $props();
+  let { onAnimationFinished } = $props();
 
   let timeoutId = null;
 
