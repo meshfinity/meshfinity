@@ -1,5 +1,5 @@
 import Renderer from "$lib/renderers/Renderer.js";
-import ViewportCamera from "./ViewportCamera";
+import viewportCameraInstance from "./viewportCameraInstance.js";
 import coreInstance from "$lib/core/coreInstance.svelte.js";
 
 const VERTEX_SHADER_SOURCE = `
@@ -47,8 +47,6 @@ export default class ViewportRenderer extends Renderer {
   constructor(canvas, gl) {
     super(canvas, gl);
 
-    this._camera = new ViewportCamera();
-
     this._positionsBuffer = this._gl.createBuffer();
     this._positionsBufferValid = false;
     this._texCoordsBuffer = this._gl.createBuffer();
@@ -88,9 +86,7 @@ export default class ViewportRenderer extends Renderer {
     this._texCoordAttrib = this._gl.getAttribLocation(this._shader, "texCoord");
     this._normalAttrib = this._gl.getAttribLocation(this._shader, "normal");
 
-    //
-    // FIXME: Debounce all $effect
-    //
+    // TODO: Debounce all $effect
 
     $effect(() => {
       if (this._gl && coreInstance.mesh.positions) {
@@ -141,7 +137,7 @@ export default class ViewportRenderer extends Renderer {
   }
 
   render() {
-    this._camera.update(this._canvas.width, this._canvas.height);
+    viewportCameraInstance.update(this._canvas.width, this._canvas.height);
     this._gl.viewport(0, 0, this._canvas.width, this._canvas.height);
 
     this._gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -153,22 +149,22 @@ export default class ViewportRenderer extends Renderer {
     this._gl.uniformMatrix4fv(
       this._projMatUniform,
       false,
-      this._camera.projMat
+      viewportCameraInstance.projMat
     );
     this._gl.uniformMatrix4fv(
       this._viewMatUniform,
       false,
-      this._camera.viewMat
+      viewportCameraInstance.viewMat
     );
     this._gl.uniformMatrix4fv(
       this._modelMatUniform,
       false,
-      this._camera.modelMat
+      viewportCameraInstance.modelMat
     );
     this._gl.uniformMatrix3fv(
       this._normalMatUniform,
       false,
-      this._camera.normalMat
+      viewportCameraInstance.normalMat
     );
 
     this._gl.activeTexture(this._gl.TEXTURE0);
@@ -237,11 +233,11 @@ export default class ViewportRenderer extends Renderer {
   }
 
   onPointerMove(event) {
-    this._camera.onPointerMove(event);
+    viewportCameraInstance.onPointerMove(event);
   }
 
   onWheel(event) {
-    this._camera.onWheel(event);
+    viewportCameraInstance.onWheel(event);
   }
 
   _bufferMeshPositions() {

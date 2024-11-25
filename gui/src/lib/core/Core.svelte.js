@@ -1,3 +1,4 @@
+import viewportCameraInstance from "../renderers/viewportCameraInstance.js";
 import Mesh from "./Mesh.svelte.js";
 import GeometryGenerationInputs from "./stageInputs/GeometryGenerationInputs.svelte";
 
@@ -20,6 +21,7 @@ export default class Core {
     this.error = null;
     this.mesh.reset();
     this.geometryGenerationInputs.reset();
+    viewportCameraInstance.reset();
   }
 
   setup() {

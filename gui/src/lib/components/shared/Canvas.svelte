@@ -1,5 +1,5 @@
 <script>
-  let { Renderer } = $props();
+  let { Renderer, controlsEnabled } = $props();
 
   let canvas = $state(null);
   let canvasClientWidth = $state(0),
@@ -75,7 +75,7 @@
     prevPointerX = x;
     prevPointerY = y;
 
-    if (renderer?.onPointerDown) {
+    if (controlsEnabled && renderer?.onPointerDown) {
       renderer.onPointerDown({ x, y, dx: 0, dy: 0 });
     }
   }}
@@ -87,7 +87,7 @@
       return;
     }
 
-    if (renderer?.onPointerMove) {
+    if (controlsEnabled && renderer?.onPointerMove) {
       const bounds = canvas.getBoundingClientRect();
       const x = event.clientX - bounds.x;
       const y = event.clientY - bounds.y;
@@ -109,7 +109,7 @@
       return;
     }
 
-    if (renderer?.onPointerUp) {
+    if (controlsEnabled && renderer?.onPointerUp) {
       const bounds = canvas.getBoundingClientRect();
       const x = event.clientX - bounds.x;
       const y = event.clientY - bounds.y;
@@ -129,9 +129,9 @@
     event.preventDefault();
     event.stopPropagation();
 
-    if (renderer?.onWheel) {
+    if (controlsEnabled && renderer?.onWheel) {
       renderer.onWheel({
-        signY: Math.sign(event.deltaY),
+        deltaY: event.deltaY,
       });
     }
   }}

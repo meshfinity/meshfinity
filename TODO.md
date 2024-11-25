@@ -1,6 +1,3 @@
-- Replace expensive psrdnoise in shader with cheap LUT
-- Fix scroll on macOS trackpad
-
 - Audio (add dependencies to to build-mac-\*.sh and build-win.ps1)
 
 - torch CUDA version on Windows

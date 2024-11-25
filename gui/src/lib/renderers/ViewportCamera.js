@@ -7,9 +7,13 @@ export default class ViewportCamera {
     this.modelMat = mat4.create();
     this.normalMat = mat3.create();
 
-    this._rotX = 0;
-    this._rotY = 0;
-    this._distance = 4.0;
+    this.reset();
+  }
+
+  reset() {
+    this._rotX = 0.0;
+    this._rotY = 0.0;
+    this._distance = 2.75;
   }
 
   update(width, height) {
@@ -44,10 +48,11 @@ export default class ViewportCamera {
     this._rotX = Math.max(-Math.PI * 0.5, Math.min(this._rotX, Math.PI * 0.5));
   }
 
-  onWheel({ signY }) {
-    const MIN_DISTANCE = 2.0;
+  onWheel({ deltaY }) {
+    const MIN_DISTANCE = 1.5;
     const MAX_DISTANCE = 8.0;
-    this._distance += signY * Math.log(this._distance);
+    this._distance +=
+      (Math.max(-150, Math.min(deltaY, 150)) / 200) * Math.log(this._distance);
     this._distance = Math.max(
       MIN_DISTANCE,
       Math.min(this._distance, MAX_DISTANCE)
