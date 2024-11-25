@@ -1,4 +1,3 @@
-- On Windows, check if using old IE/Edge or Chromium WebView, if not Chromium then ask people to download the WebView Evergreen Installer
 - Open button instead of drag-n-drop
 - Audio (add dependencies to to build-mac-\*.sh and build-win.ps1)
 - Replace expensive psrdnoise in shader with cheap LUT
