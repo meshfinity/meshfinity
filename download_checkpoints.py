@@ -11,11 +11,11 @@ import wakepy
 
 def format_filesize(filesize):
     if filesize > 1000000000:
-        return f"{(filesize / 1000000000.0):.2f}GB"
+        return f"{(filesize / 1000000000.0):.2f} GB"
     if filesize > 1000000:
-        return f"{round(filesize / 1000000.0)}MB"
+        return f"{round(filesize / 1000000.0)} MB"
     if filesize > 1000:
-        return f"{round(filesize / 1000.0)}KB"
+        return f"{round(filesize / 1000.0)} KB"
     else:
         return f"{filesize} B"
 
