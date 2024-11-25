@@ -15,7 +15,7 @@ arch --x86_64 /usr/local/bin/python3.12 -m venv venv
 source venv/bin/activate
 
 arch --x86_64 pip install torch torchvision
-arch --x86_64 pip install omegaconf pillow einops transformers trimesh "rembg[cpu]" vtk moderngl pywebview requests huggingface-hub filelock
+arch --x86_64 pip install omegaconf pillow einops transformers trimesh "rembg[cpu]" vtk moderngl pywebview requests huggingface-hub filelock wakepy
 arch --x86_64 pip uninstall -y rembg # We need rembg's dependencies, but we want to use our custom rembg_offline instead of the original rembg, so uninstall the original
 arch --x86_64 pip uninstall -y numpy
 arch --x86_64 pip install numpy==1.26.4

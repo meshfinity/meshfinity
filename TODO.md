@@ -1,13 +1,11 @@
-- Add text in download "do not close the application or turn off your computer", also percentage/time estimate?
-- Weight progresses for each file according to their size, so e.g. model.ckpt takes up more of the progress bar than config.yaml
-- Prevent power-save from sleeping while downloading?
 - On Windows, check if using old IE/Edge or Chromium WebView, if not Chromium then ask people to download the WebView Evergreen Installer
 - Open button instead of drag-n-drop
-- Audio
+- Audio (add dependencies to to build-mac-\*.sh and build-win.ps1)
 - Replace expensive psrdnoise in shader with cheap LUT
 
 - torch CUDA version on Windows
 - rembg[gpu] could be used on CUDA devices, but not on Mac, since regular onnxruntime ships with Core ML backend
+- Ensure closing app during download _actually_ stops download on Windows
 
 ```js
 //

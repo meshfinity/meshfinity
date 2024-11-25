@@ -92,7 +92,7 @@
       in:fade={customFadeIn}
       out:fade={customFadeOut}
     >
-      <p class="pointer-events-none select-none text-center">
+      <p class="pointer-events-none select-none text-center text-white/80">
         We&apos;re sorry, Meshfinity has encountered an error while setting up.<br
         />
         If this is your first time using Meshfinity, please ensure your device is

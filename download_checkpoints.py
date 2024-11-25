@@ -6,6 +6,18 @@ import pathlib
 import platform
 import pooch
 import traceback
+import wakepy
+
+
+def format_filesize(filesize):
+    if filesize > 1000000000:
+        return f"{(filesize / 1000000000.0):.2f}GB"
+    if filesize > 1000000:
+        return f"{round(filesize / 1000000.0)}MB"
+    if filesize > 1000:
+        return f"{round(filesize / 1000.0)}KB"
+    else:
+        return f"{filesize} B"
 
 
 class CustomProgressBar:
@@ -13,15 +25,15 @@ class CustomProgressBar:
         self,
         worker,
         progress_label,
-        num_files_already_downloaded,
-        num_total_files_to_download,
+        elapsed_progress,
+        current_item_weight,
     ):
         self.count = 0
         self.total = None
         self._worker = worker
         self._progress_label = progress_label
-        self._num_files_already_downloaded = num_files_already_downloaded
-        self._num_total_files_to_download = num_total_files_to_download
+        self._elapsed_progress = elapsed_progress
+        self._current_item_weight = current_item_weight
 
     # Pooch docs say the `i` argument is the total downloaded so far, but according to the source:
     # https://github.com/fatiando/pooch/blob/main/pooch/downloaders.py#L248
@@ -35,11 +47,9 @@ class CustomProgressBar:
         self._worker._push_event(
             "setupProgress",
             {
-                "label": self._progress_label,
-                "value": (
-                    self._num_files_already_downloaded + (self.count / self.total)
-                )
-                / self._num_total_files_to_download,
+                "label": f"{self._progress_label} ({format_filesize(self.count)}/{format_filesize(self.total)})",
+                "value": self._elapsed_progress
+                + ((self.count / self.total) * self._current_item_weight),
             },
         )
 
@@ -98,11 +108,11 @@ def retrieve_checkpoint(
     file_name,
     worker,
     progress_label,
-    num_files_already_download,
-    num_total_files_to_download,
+    elapsed_progress,
+    current_item_weight,
 ):
     custom_progress_bar = CustomProgressBar(
-        worker, progress_label, num_files_already_download, num_total_files_to_download
+        worker, progress_label, elapsed_progress, current_item_weight
     )
     return pooch.retrieve(
         url,
@@ -113,7 +123,7 @@ def retrieve_checkpoint(
     )
 
 
-def download_checkpoints(worker):
+def _download_checkpoints(worker):
     # We will delete temporary files and pooch verifies SHA hashes before downloading anything...
     # In this `verifying` state, nothing will be displayed
     # If pooch needs to download anything, then CustomProgressBar will update progress accordingly
@@ -128,6 +138,13 @@ def download_checkpoints(worker):
 
     delete_tmp_downloads()
 
+    TSR_WEIGHT = 0.75
+    DINO_WEIGHT = 0.15
+    U2NET_WEIGHT = 0.08
+    JSON_WEIGHT = (1 - (TSR_WEIGHT + DINO_WEIGHT + U2NET_WEIGHT)) / 3
+
+    elapsed_progress = 0
+
     retrieve_checkpoint(
         "https://huggingface.co/stabilityai/TripoSR/resolve/main/model.ckpt",
         "sha256:429e2c6b22a0923967459de24d67f05962b235f79cde6b032aa7ed2ffcd970ee",
@@ -135,9 +152,11 @@ def download_checkpoints(worker):
         "model.ckpt",
         worker,
         "Downloading TripoSR weights",
-        0,
-        6,
+        elapsed_progress,
+        TSR_WEIGHT,
     )
+    elapsed_progress += TSR_WEIGHT
+
     retrieve_checkpoint(
         "https://huggingface.co/stabilityai/TripoSR/resolve/main/config.yaml",
         "sha256:74ca708ce086bf68e97709ea6b3d91f14717921c04691e84043f0eb8fcc68e62",
@@ -145,19 +164,11 @@ def download_checkpoints(worker):
         "config.yaml",
         worker,
         "Downloading TripoSR metadata",
-        1,
-        6,
+        elapsed_progress,
+        JSON_WEIGHT,
     )
-    retrieve_checkpoint(
-        "https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx",
-        "sha256:8d10d2f3bb75ae3b6d527c77944fc5e7dcd94b29809d47a739a7a728a912b491",
-        "u2net",
-        "u2net.onnx",
-        worker,
-        "Downloading u2net weights",
-        2,
-        6,
-    )
+    elapsed_progress += JSON_WEIGHT
+
     retrieve_checkpoint(
         "https://huggingface.co/facebook/dino-vitb16/resolve/main/pytorch_model.bin",
         "sha256:a064e36c67289caaa5c949c0b3f7f31a0fcbcba5721f5fa12419933ec1f4fe6e",
@@ -165,9 +176,11 @@ def download_checkpoints(worker):
         "pytorch_model.bin",
         worker,
         "Downloading DINO weights",
-        3,
-        6,
+        elapsed_progress,
+        DINO_WEIGHT,
     )
+    elapsed_progress += DINO_WEIGHT
+
     retrieve_checkpoint(
         "https://huggingface.co/facebook/dino-vitb16/resolve/main/config.json",
         "sha256:b87c0270b97db085fd82cf114a761fd0f62ae7914fbd407c752a2260646b689c",
@@ -175,9 +188,11 @@ def download_checkpoints(worker):
         "config.json",
         worker,
         "Downloading DINO metadata",
-        4,
-        6,
+        elapsed_progress,
+        JSON_WEIGHT,
     )
+    elapsed_progress += JSON_WEIGHT
+
     retrieve_checkpoint(
         "https://huggingface.co/facebook/dino-vitb16/resolve/main/preprocessor_config.json",
         "sha256:44298553bf686c8c3d1b128f24fae01f76235f66bda5516f1c6c0c57bba1b47f",
@@ -185,11 +200,31 @@ def download_checkpoints(worker):
         "preprocessor_config.json",
         worker,
         "Downloading DINO metadata",
-        5,
-        6,
+        elapsed_progress,
+        JSON_WEIGHT,
     )
+    elapsed_progress += JSON_WEIGHT
+
+    retrieve_checkpoint(
+        "https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx",
+        "sha256:8d10d2f3bb75ae3b6d527c77944fc5e7dcd94b29809d47a739a7a728a912b491",
+        "u2net",
+        "u2net.onnx",
+        worker,
+        "Downloading u2net weights",
+        elapsed_progress,
+        U2NET_WEIGHT,
+    )
+    elapsed_progress += U2NET_WEIGHT
 
     worker._push_event(
         "setupProgress",
         None,
     )
+
+
+def download_checkpoints(worker):
+    with wakepy.keep.running():
+        print("download_checkpoints: Entered wake lock")
+        _download_checkpoints(worker)
+    print("download_checkpoints: Wake lock released!")

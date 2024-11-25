@@ -23,8 +23,12 @@
     (2.2 GB)<br />to be included with the application bundle. This only happens
     on first launch.
   </p>
-  <div class="grow-0 shrink-0 drop-shadow-sm text-sm text-white/80">
+  <div class="grow-0 shrink-0 drop-shadow-sm text-sm text-white/80 mb-4">
     {coreInstance.setupProgress.label}
+  </div>
+  <div class="grow-0 shrink-0 drop-shadow-sm text-sm text-white/50">
+    Do not close this window or turn off your device while setup is in
+    progress...
   </div>
 </div>
 
