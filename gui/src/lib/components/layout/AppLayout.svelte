@@ -122,7 +122,7 @@
 
       {#if !coreInstance.mesh.previewReady && !coreInstance.progress}
         <div
-          class="pointer-events-none select-none absolute top-0 left-0 w-full h-full overflow-hidden"
+          class="absolute top-0 left-0 w-full h-full overflow-hidden"
           in:fade={customFadeIn}
           out:fade={customFadeOut}
         >

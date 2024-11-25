@@ -1,9 +1,9 @@
 <script>
-  function downloadWebView2() {
+  const downloadWebView2 = () => {
     window.pywebview.api.webbrowser_open(
       "https://developer.microsoft.com/en-us/microsoft-edge/webview2"
     );
-  }
+  };
 </script>
 
 <div

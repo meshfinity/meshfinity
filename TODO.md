@@ -1,6 +1,7 @@
-- Open button instead of drag-n-drop
-- Audio (add dependencies to to build-mac-\*.sh and build-win.ps1)
 - Replace expensive psrdnoise in shader with cheap LUT
+- Fix scroll on macOS trackpad
+
+- Audio (add dependencies to to build-mac-\*.sh and build-win.ps1)
 
 - torch CUDA version on Windows
 - rembg[gpu] could be used on CUDA devices, but not on Mac, since regular onnxruntime ships with Core ML backend

@@ -4,11 +4,13 @@
   import coreInstance from "$lib/core/coreInstance.svelte.js";
 
   let isLegacyEdge = $state(null);
+  let alreadyInitialized = $state(false);
 
   $effect(() => {
     isLegacyEdge = /edge|trident|msie/gi.test(navigator.userAgent);
 
-    if (isLegacyEdge === false) {
+    if (!alreadyInitialized && isLegacyEdge === false) {
+      alreadyInitialized = true;
       window._pywebviewCoreInstance = coreInstance;
       window.pywebview.api.check_for_updates();
       coreInstance.setup();
