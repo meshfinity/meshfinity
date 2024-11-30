@@ -3,15 +3,37 @@ import json
 import io
 import os
 import re
+import sys
 import uuid
+import pathlib
+import platform
 import threading
 import traceback
 import webbrowser
 import requests
 import webview
+import miniaudio
+import numpy as np
 from PIL import Image
 from tsr_worker import TsrWorker
 from version import MESHFINITY_CURRENT_VERSION
+
+
+def looped_sound_stream(filename):
+    decoded_file = miniaudio.decode_file(filename)
+    decoded_samples = np.array(decoded_file.samples, dtype=np.int16).reshape(
+        (-1, decoded_file.nchannels)
+    )
+
+    required_frames = yield b""
+    current_frame = 0
+    while True:
+        end_frame = min(len(decoded_samples), current_frame + required_frames)
+        required_frames = yield decoded_samples[current_frame:end_frame]
+        if end_frame == len(decoded_samples):
+            current_frame = 0
+        else:
+            current_frame = end_frame
 
 
 class TsrWebApi:
@@ -21,7 +43,11 @@ class TsrWebApi:
             target=self.worker.run, daemon=True
         ).start()
 
+        self._config = None
+        self._load_config()
+
         self._window = None
+        self._audio_device = None
 
     def bind_window(self, window):
         self._window = window
@@ -116,3 +142,83 @@ class TsrWebApi:
                 )
             )
         )
+
+    def enable_audio(self):
+        if self._audio_device is None:
+            self._audio_device = miniaudio.PlaybackDevice()
+        self._config["audio_enabled"] = True
+        self._save_config()
+
+    def disable_audio(self):
+        self._config["audio_enabled"] = False
+        self._save_config()
+        self.kill_audio()
+
+    def get_audio_enabled(self):
+        return self._config["audio_enabled"]
+
+    def play_sound(self, filename, loop):
+        if not self.get_audio_enabled() or self._audio_device is None:
+            return
+
+        self._stop_audio()
+
+        if loop:
+            stream = looped_sound_stream(self._get_sound_path(filename))
+            next(stream)
+        else:
+            stream = miniaudio.stream_file(self._get_sound_path(filename))
+
+        # stream = miniaudio.stream_with_callbacks(stream, end_callback=self._stop_audio)
+        self._audio_device.start(stream)
+
+    def _stop_audio(self):
+        self._audio_device.stop()
+
+    def kill_audio(self):
+        if self._audio_device is not None:
+            self._audio_device.close()
+
+    def _get_sound_path(self, sound_filename):
+        if os.getenv("MESHFINITY_ENVIRONMENT") == "development":
+            return os.path.join(os.path.dirname(__file__), "sounds", sound_filename)
+        else:
+            return os.path.join(sys._MEIPASS, "sounds", sound_filename)
+
+    def _load_config(self):
+        config_path = self._get_config_path()
+        if os.path.exists(config_path):
+            with open(config_path, "r") as config_file:
+                self._config = json.load(config_file)
+        else:
+            self._config = self._get_default_config()
+            self._save_config()
+
+    def _save_config(self):
+        config_path = self._get_config_path()
+        with open(config_path, "w") as config_file:
+            json.dump(self._config, config_file)
+
+    def _get_config_path(self):
+        if os.getenv("MESHFINITY_ENVIRONMENT") == "development":
+            folder_path = os.path.join(os.path.dirname(__file__), "config")
+        elif platform.system() == "Darwin":
+            folder_path = os.path.join(
+                pathlib.Path.home(),
+                "Library",
+                "Application Support",
+                "Meshfinity",
+                "config",
+            )
+        elif platform.system() == "Windows":
+            folder_path = os.path.join(sys._MEIPASS, "config")
+        else:
+            raise Exception("Platform not supported")
+
+        pathlib.Path(folder_path).mkdir(parents=True, exist_ok=True)
+
+        config_path = os.path.join(folder_path, "config.json")
+        return config_path
+
+    def _get_default_config(self):
+        return {"audio_enabled": True}

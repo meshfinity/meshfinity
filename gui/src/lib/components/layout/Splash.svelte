@@ -4,7 +4,7 @@
   let timeoutId = null;
 
   $effect(() => {
-    timeoutId = window.setTimeout(() => onAnimationFinished(), 4000);
+    timeoutId = window.setTimeout(() => onAnimationFinished(), 6000);
     return () => {
       if (timeoutId !== null) {
         window.clearTimeout(timeoutId);

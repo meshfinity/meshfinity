@@ -1,6 +1,6 @@
 autoremesher
-checkpoints
-ignored-files
+/checkpoints
+/config
 dist
 *.spec
 

@@ -124,8 +124,14 @@ def kill_api_processes():
     api.kill_running_processes()
 
 
+def kill_audio():
+    global api
+    api.kill_audio()
+
+
 atexit.register(delete_tmp_downloads)
 atexit.register(kill_api_processes)
+atexit.register(kill_audio)
 
 window = webview.create_window(
     "Meshfinity",

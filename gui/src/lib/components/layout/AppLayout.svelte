@@ -53,6 +53,32 @@
       }, 300);
     }, 300);
   });
+
+  $effect(() => {
+    if (window.pywebview.api.get_audio_enabled()) {
+      window.pywebview.api.enable_audio();
+    }
+  });
+
+  let hasStartedIntroPlayback = $state(false);
+  $effect(() => {
+    if (splashVisible && !hasStartedIntroPlayback) {
+      hasStartedIntroPlayback = true;
+      window.setTimeout(() => {
+        if (!setupErrorVisible) {
+          window.pywebview.api.play_sound("intro.ogg", false);
+        }
+      }, 300);
+    }
+  });
+
+  let hasStartedBgmPlayback = $state(false);
+  $effect(() => {
+    if (mainVisible && !hasStartedBgmPlayback) {
+      hasStartedBgmPlayback = true;
+      window.pywebview.api.play_sound("main.ogg", true);
+    }
+  });
 </script>
 
 <div
