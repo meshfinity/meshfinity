@@ -24,7 +24,7 @@ jobs:
           prop_path: "version"
       # We need to install Python with a custom x64 Homebrew instead of the ARM one
       - run: NONINTERACTIVE=1 arch --x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      - run: arch --x86_64 /usr/local/Homebrew/bin/brew install tcl-tk python@3.12 || true # This returns exit code 1 even if successful - why ??
+      - run: arch --x86_64 /usr/local/Homebrew/bin/brew install tcl-tk python@3.12 || true # This returns exit code 1 even if successful - why?
       - run: ./build-mac-intel.sh
         timeout-minutes: 60
       - run: ditto -c -k --sequesterRsrc --keepParent dist/Meshfinity.app meshfinity-${{ steps.version.outputs.prop }}-mac-intel.zip

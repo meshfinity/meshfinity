@@ -10,7 +10,7 @@
 >
   <img
     src={coreInstance.mesh.rembgPreviewDataUrl}
-    class="grow-0 shrink-0 w-[192px] h-[192px] bg-black/50 backdrop-blur rounded-md shadow-xl"
+    class="grow-0 shrink-0 w-[192px] h-[192px] bg-black/50 rounded-md shadow-xl"
     alt=""
   />
 </div>

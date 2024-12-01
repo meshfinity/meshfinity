@@ -12,28 +12,10 @@ import traceback
 import webbrowser
 import requests
 import webview
-import miniaudio
-import numpy as np
 from PIL import Image
 from tsr_worker import TsrWorker
+from audio_process import AudioProcess
 from version import MESHFINITY_CURRENT_VERSION
-
-
-def looped_sound_stream(filename):
-    decoded_file = miniaudio.decode_file(filename)
-    decoded_samples = np.array(decoded_file.samples, dtype=np.int16).reshape(
-        (-1, decoded_file.nchannels)
-    )
-
-    required_frames = yield b""
-    current_frame = 0
-    while True:
-        end_frame = min(len(decoded_samples), current_frame + required_frames)
-        required_frames = yield decoded_samples[current_frame:end_frame]
-        if end_frame == len(decoded_samples):
-            current_frame = 0
-        else:
-            current_frame = end_frame
 
 
 class TsrWebApi:
@@ -47,7 +29,7 @@ class TsrWebApi:
         self._load_config()
 
         self._window = None
-        self._audio_device = None
+        self._audio_process = AudioProcess()
 
     def bind_window(self, window):
         self._window = window
@@ -144,8 +126,7 @@ class TsrWebApi:
         )
 
     def enable_audio(self):
-        if self._audio_device is None:
-            self._audio_device = miniaudio.PlaybackDevice()
+        self._audio_process.open_playback_device()
         self._config["audio_enabled"] = True
         self._save_config()
 
@@ -158,32 +139,18 @@ class TsrWebApi:
         return self._config["audio_enabled"]
 
     def play_sound(self, filename, loop):
-        if not self.get_audio_enabled() or self._audio_device is None:
-            return
-
-        self._stop_audio()
-
-        if loop:
-            stream = looped_sound_stream(self._get_sound_path(filename))
-            next(stream)
-        else:
-            stream = miniaudio.stream_file(self._get_sound_path(filename))
-
-        # stream = miniaudio.stream_with_callbacks(stream, end_callback=self._stop_audio)
-        self._audio_device.start(stream)
-
-    def _stop_audio(self):
-        self._audio_device.stop()
+        self._audio_process.play_sound(filename, loop)
 
     def kill_audio(self):
-        if self._audio_device is not None:
-            self._audio_device.close()
+        self._audio_process.close_playback_device()
 
-    def _get_sound_path(self, sound_filename):
-        if os.getenv("MESHFINITY_ENVIRONMENT") == "development":
-            return os.path.join(os.path.dirname(__file__), "sounds", sound_filename)
-        else:
-            return os.path.join(sys._MEIPASS, "sounds", sound_filename)
+    def terminate_audio_process(self):
+        try:
+            self.kill_audio()
+        except Exception:
+            print(traceback.format_exc())
+        self._audio_process.terminate()
+        self._audio_process = None
 
     def _load_config(self):
         config_path = self._get_config_path()
