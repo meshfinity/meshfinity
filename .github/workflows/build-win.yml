@@ -25,7 +25,7 @@ jobs:
         with:
           path: "version.json"
           prop_path: "version"
-      - run: .\build-win.bat
+      - run: .\build-win.ps1
         timeout-minutes: 60
       - run: Compress-Archive dist\\Meshfinity meshfinity-${{ github.event.inputs.tagName }}-win.zip
       - uses: softprops/action-gh-release@v2
