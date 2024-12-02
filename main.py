@@ -77,8 +77,6 @@ if __name__ == "__main__":
         lock_file = None
         lock_file_path = None
 
-        sys.exit(0)
-
     def release_lock_file_signal(signum, frame):
         # Prevent exception: release_lock_file takes 0 positional arguments but called with 2
         release_lock_file()
@@ -127,6 +125,26 @@ if __name__ == "__main__":
     atexit.register(kill_running_processes)
     atexit.register(terminate_audio_process)
 
+    def on_webview_closing():
+        # atexit callbacks are not called correctly on Cmd+Q, so we need to call them here
+        try:
+            terminate_audio_process()
+        except Exception:
+            print(traceback.format_exc())
+        try:
+            kill_running_processes()
+        except Exception:
+            print(traceback.format_exc())
+        try:
+            delete_tmp_downloads()
+        except Exception:
+            print(traceback.format_exc())
+        try:
+            release_lock_file()
+        except Exception:
+            print(traceback.format_exc())
+        return True
+
     window = webview.create_window(
         "Meshfinity",
         (
@@ -138,6 +156,7 @@ if __name__ == "__main__":
         min_size=(800, 600),
         hidden=True,
     )
+    window.events.closing += on_webview_closing
     api.bind_window(window)
     webview.start(
         on_webview_start,

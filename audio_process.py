@@ -44,6 +44,10 @@ class AudioProcessWorker:
                     self.close_playback_device()
                 elif item_type == "play_sound":
                     self.play_sound(in_queue_item["filename"], in_queue_item["loop"])
+                elif item_type == "terminate":
+                    self.close_playback_device()
+                    self._audio_device = None
+                    break
             except Exception:
                 print(traceback.format_exc())
 
@@ -54,6 +58,7 @@ class AudioProcessWorker:
     def close_playback_device(self):
         if self._has_playback_device():
             self._audio_device.close()
+            self._audio_device = None
 
     def play_sound(self, filename, loop):
         if not self._has_playback_device():
@@ -93,6 +98,10 @@ class AudioProcess:
         self._worker_process.start()
 
     def terminate(self):
+        self._worker.enqueue(
+            # In case the Process.terminate() call below fails for any reason
+            {"type": "terminate"}
+        )
         self._worker_process.terminate()
 
     def open_playback_device(self):

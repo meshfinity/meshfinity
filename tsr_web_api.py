@@ -28,8 +28,11 @@ class TsrWebApi:
         self._config = None
         self._load_config()
 
-        self._window = None
         self._audio_process = AudioProcess()
+        if self.get_audio_enabled():
+            self.enable_audio()
+
+        self._window = None
 
     def bind_window(self, window):
         self._window = window
@@ -133,7 +136,7 @@ class TsrWebApi:
     def disable_audio(self):
         self._config["audio_enabled"] = False
         self._save_config()
-        self.kill_audio()
+        self._audio_process.close_playback_device()
 
     def get_audio_enabled(self):
         return self._config["audio_enabled"]
@@ -141,12 +144,9 @@ class TsrWebApi:
     def play_sound(self, filename, loop):
         self._audio_process.play_sound(filename, loop)
 
-    def kill_audio(self):
-        self._audio_process.close_playback_device()
-
     def terminate_audio_process(self):
         try:
-            self.kill_audio()
+            self._audio_process.close_playback_device()
         except Exception:
             print(traceback.format_exc())
         self._audio_process.terminate()

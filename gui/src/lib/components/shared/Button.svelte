@@ -2,6 +2,7 @@
   let {
     icon,
     label,
+    ariaLabel,
     active,
     disabled,
     onClick,
@@ -18,7 +19,7 @@
       gel: {
         default: "opacity-100",
         disabled: "opacity-0",
-        extraBright: true,
+        image: "gel-image-extra-bright",
       },
       rounded: "rounded-full",
     },
@@ -30,6 +31,19 @@
       gel: {
         default: "opacity-100",
         disabled: "opacity-0",
+        image: "gel-image",
+      },
+      rounded: "rounded-full",
+    },
+    dark: {
+      colors: {
+        default: "bg-black/75 text-white/85 gel-hover-focus",
+        disabled: "bg-black/50",
+      },
+      gel: {
+        default: "opacity-100",
+        disabled: "opacity-0",
+        image: "gel-image-small",
       },
       rounded: "rounded-full",
     },
@@ -57,13 +71,12 @@
   ].rounded}"
   {disabled}
   onclick={onClick}
+  aria-label={ariaLabel}
 >
   <div
     class="pointer-events-none select-none absolute top-0 left-0 w-full h-full {stylePresets[
       style
-    ].gel.extraBright
-      ? 'gel-image-extra-bright'
-      : 'gel-image'} transition-opacity {gelStyles}"
+    ].gel.image} transition-opacity {gelStyles}"
   ></div>
 
   <div
@@ -74,7 +87,9 @@
         <svelte:component this={icon} />
       </div>
     {/if}
-    <div class="grow-0 shrink-0 font-medium">{label}</div>
+    {#if label}
+      <div class="grow-0 shrink-0 font-medium">{label}</div>
+    {/if}
   </div>
 </button>
 
@@ -101,6 +116,11 @@
       ),
       linear-gradient(#fff0 0%, #fff5 50%, #fff0 50%),
       radial-gradient(at center bottom, #fff0 0%, #fff0 30%, #fff9 100%);
+  }
+
+  .gel-image-small {
+    background-image: radial-gradient(at center top, #fff1 0%, #fff0 60%),
+      linear-gradient(#fff0 0%, #fff3 50%, #fff0 50%);
   }
 
   .gel-hover-focus,

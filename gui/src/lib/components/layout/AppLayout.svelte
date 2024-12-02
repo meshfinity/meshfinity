@@ -17,6 +17,7 @@
   import EditSidebar from "$lib/components/editor/EditSidebar/EditSidebar.svelte";
   import SupportSidebar from "$lib/components/editor/SupportSidebar/SupportSidebar.svelte";
   import coreInstance from "$lib/core/coreInstance.svelte.js";
+  import MuteButton from "./MuteButton.svelte";
 
   let backgroundVisible = $state(false);
   let foregroundVisible = $state(false);
@@ -44,6 +45,7 @@
       !splashVisible &&
       !setupProgressVisible
   );
+  let muteVisible = $derived(splashVisible || mainVisible);
 
   $effect(() => {
     window.setTimeout(() => {
@@ -52,12 +54,6 @@
         foregroundVisible = true;
       }, 300);
     }, 300);
-  });
-
-  $effect(() => {
-    if (window.pywebview.api.get_audio_enabled()) {
-      window.pywebview.api.enable_audio();
-    }
   });
 
   let hasStartedIntroPlayback = $state(false);
@@ -79,6 +75,13 @@
       window.pywebview.api.play_sound("main.ogg", true);
     }
   });
+
+  const afterUnmute = () => {
+    if (mainVisible) {
+      window.pywebview.api.play_sound("main.ogg", true);
+      hasStartedBgmPlayback = true;
+    }
+  };
 </script>
 
 <div
@@ -184,5 +187,9 @@
         <SupportSidebar />
       </div>
     </div>
+  {/if}
+
+  {#if muteVisible}
+    <MuteButton {afterUnmute} />
   {/if}
 </div>
