@@ -27,8 +27,8 @@ jobs:
           prop_path: "version"
       - run: .\build-win.ps1
         timeout-minutes: 60
-      - run: Compress-Archive dist\\Meshfinity meshfinity-${{ github.event.inputs.tagName }}-win.zip
+      - run: Compress-Archive dist\\Meshfinity meshfinity-${{ steps.version.outputs.prop }}-win.zip
       - uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tagName }}
-          files: meshfinity-${{ github.event.inputs.tagName }}-win.zip
+          tag_name: ${{ steps.version.outputs.prop }}
+          files: meshfinity-${{ steps.version.outputs.prop }}-win.zip
