@@ -6,8 +6,8 @@ Meshfinity uses TripoSR to generate 3D meshes based on 2D reference images. A [p
 
 ## Setup (macOS)
 
-- Download the Mac build from [Releases](https://github.com/meshfinity/meshfinity/releases) page.
-- Since the macOS version is not notarized, you'll need to right-click on the Meshfinity application and click **Open**. When prompted that macOS could not verify the application, open the **Settings** app, navigate to the **Privacy & Security** section, then scroll all the way down and click the **Open Anyway** button. *(If you are concerned that this application is malicious, feel free to verify it with https://virustotal.com or your preferred anti-malware tool).*
+- Download the macOS build from [Releases](https://github.com/meshfinity/meshfinity/releases) page.
+- Since the macOS version is not notarized, you'll need to *right-click* (or *Control-click*) the Meshfinity application in Finder and click **Open**. When prompted that macOS could not verify the application, open the **Settings** app, navigate to the **Privacy & Security** section, then scroll all the way down and click the **Open Anyway** button. *(If you are concerned that this application is malicious, feel free to verify it with https://virustotal.com or your preferred anti-malware tool).*
 
 ## Demo
 
